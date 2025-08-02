@@ -1,4 +1,8 @@
 # gemini-app
+## デモ
+
+https://github.com/user-attachments/assets/2bbd98d2-e4d5-4ab8-a749-11cdbd9d27b2
+
 ## フロント
 ```
 yuto2@yutoabe:~/2025/gemini-app$ cd frontend/
