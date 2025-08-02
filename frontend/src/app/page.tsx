@@ -1,6 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import {
+  Stack,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  ListSubheader,
+  IconButton,
+} from "@mui/material";
 
 export default function Home() {
   const [items, setItems] = useState<string[]>([]);
@@ -31,19 +43,29 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <h1>Next.js + Flask + SQLite</h1>
-      <ul>
-        {items.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
-      </ul>
-      <input
-        type="text"
-        value={newItem}
-        onChange={(e) => setNewItem(e.target.value)}
-      />
-      <button onClick={addItem}>Add Item</button>
-    </div>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Box sx={{ width: "60%", bgcolor: "background.paper" }}>
+        <Typography variant="h4" gutterBottom>
+          Gemini-App
+        </Typography>
+        <ul>
+          {items.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+        <input
+          type="text"
+          value={newItem}
+          onChange={(e) => setNewItem(e.target.value)}
+        />
+        <button onClick={addItem}>Add Item</button>
+      </Box>
+    </Box>
   );
 }
