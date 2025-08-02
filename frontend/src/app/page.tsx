@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
+import useSWR from "swr";
 import {
   Stack,
   Box,
@@ -10,22 +11,26 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
+import { fetcher } from "../../hooks/fetcher";
+
+type Item = {
+  id: number;
+  name: string;
+};
+
+const API_BASE_URL = "http://localhost:5000";
 
 export default function Home() {
-  const [items, setItems] = useState<string[]>([]);
   const [recording, setRecording] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
-  const fetchItems = async () => {
-    const res = await fetch("http://localhost:5000/items");
-    const data = await res.json();
-    setItems(data);
-  };
+  const {
+    data: items,
+    mutate,
+    isLoading,
+    error,
+  } = useSWR<Item[]>(`${API_BASE_URL}/items`, fetcher);
 
   const startRecording = async () => {
     try {
@@ -47,15 +52,10 @@ export default function Home() {
         const formData = new FormData();
         formData.append("file", audioBlob, "recording.webm");
 
-        const res = await fetch("http://localhost:5000/upload-audio", {
+        await fetch("http://localhost:5000/upload-audio", {
           method: "POST",
           body: formData,
         });
-
-        if (res.ok) {
-          const resultText = await res.text();
-          setItems((prev) => [...prev, resultText]);
-        }
       };
 
       mediaRecorder.start();
@@ -69,8 +69,13 @@ export default function Home() {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
       setRecording(false);
+
+      mutate();
     }
   };
+
+  if (isLoading) return <Typography>読み込み中...</Typography>;
+  if (error) return <Typography>エラーが発生しました。</Typography>;
 
   return (
     <Box
@@ -109,9 +114,9 @@ export default function Home() {
           応答履歴
         </Typography>
         <List>
-          {items.map((item, index) => (
+          {items?.map((item, index) => (
             <ListItem key={index}>
-              <ListItemText primary={item} />
+              <ListItemText primary={item.name} />
             </ListItem>
           ))}
         </List>
