@@ -10,8 +10,10 @@ import {
   List,
   ListItem,
   ListItemText,
+  IconButton,
 } from "@mui/material";
 import { fetcher } from "../../hooks/fetcher";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 type Item = {
   id: number;
@@ -74,6 +76,13 @@ export default function Home() {
     }
   };
 
+  const deleteItem = async (id: number) => {
+    await fetch(`${API_BASE_URL}/items/${id}`, {
+      method: "DELETE",
+    });
+    mutate();
+  };
+
   if (isLoading) return <Typography>読み込み中...</Typography>;
   if (error) return <Typography>エラーが発生しました。</Typography>;
 
@@ -111,12 +120,19 @@ export default function Home() {
         </Stack>
 
         <Typography variant="h6" gutterBottom>
-          応答履歴
+          発言履歴
         </Typography>
         <List>
           {items?.map((item, index) => (
             <ListItem key={index}>
               <ListItemText primary={item.name} />
+              <IconButton
+                edge="end"
+                aria-label="delete"
+                onClick={() => deleteItem(item.id)}
+              >
+                <DeleteIcon />
+              </IconButton>
             </ListItem>
           ))}
         </List>
