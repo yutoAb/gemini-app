@@ -5,6 +5,9 @@ import os
 from werkzeug.utils import secure_filename
 from google.cloud import speech
 import io
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)

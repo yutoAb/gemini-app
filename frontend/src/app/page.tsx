@@ -52,10 +52,12 @@ export default function Home() {
         const formData = new FormData();
         formData.append("file", audioBlob, "recording.webm");
 
-        await fetch("http://localhost:5000/upload-audio", {
+        await fetch(`${API_BASE_URL}/upload-audio`, {
           method: "POST",
           body: formData,
         });
+
+        mutate();
       };
 
       mediaRecorder.start();
@@ -69,8 +71,6 @@ export default function Home() {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
       setRecording(false);
-
-      mutate();
     }
   };
 
